@@ -16,13 +16,13 @@
             "request": "launch",
             "mainClass": "astar",
             "projectName": "_Assignment3_14163d7"
-        }
+        },
         {
             "type": "java",
             "name": "Launch with Arguments Prompt",
             "request": "launch",
             "mainClass": "",
-            "args": "clusters_v2.csv 4 10 20"
+            "args": "spiral_v2.csv 1 44 25"
         }
     ]
 }
