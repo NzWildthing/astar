@@ -3,7 +3,9 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.geom.*;
-public class astar extends JPanel{
+import java.util.Comparator;
+
+public class astar extends JPanel {
     public static Double endx, endy, startx, starty;
     
     public static int starti, endi;
@@ -20,7 +22,7 @@ public class astar extends JPanel{
     //Cost distance from one node to another as long as within given distance parameter 
 
     //Class to hold all the information about a node 
-    public static class Node{
+    public static class Node {
         public double x_coord; 
         public double y_coord;
         public double heuristic = 0; 
@@ -81,8 +83,9 @@ public class astar extends JPanel{
                 
                 line = reader.readLine();
             }
-            reader.close();
             
+            reader.close();
+
             System.out.println("Start: " + startx + " " + starty);
             System.out.println("End: " + endx + " " + endy);
 
@@ -91,9 +94,14 @@ public class astar extends JPanel{
 
             //Precomputes heuristic
             setHeuristic();
-            
+
+            //Calls the astar algorithm 
+            astar_algorithm();
+
             //Draws the graphical GUI
             drawGraph();
+        
+
 
         
         }	
@@ -153,7 +161,7 @@ public class astar extends JPanel{
         g1.drawString("Star", 5, 80);
         g1.fill(new Ellipse2D.Double(100, 70, width+3, height+3));
         
-
+        
         //run through all stars
         for(Node node : stars){
             //get drawing coordinates 
@@ -225,16 +233,43 @@ public class astar extends JPanel{
     }
 
     //Frontier management and astar implementation 
-    public void astar_algorithm(){
+    public static void astar_algorithm(){
         
         //Makes the frontier to look through 
         ArrayList<Node> frontier = new ArrayList<>();
+        Stack<Node> theStack = new Stack<>();
 
         //Initialises the start of the frontier with the start node 
         frontier.add(stars.get(starti + 1));
 
         while(!frontier.isEmpty()){
-
+            Collections.sort(frontier, new Comparator<Node>(){
+                public int compare(Node o1, Node o2){
+                    if(o1.f_value == o2.f_value)
+                        return 0;
+                    return o1.f_value< o2.f_value ? -1 : 1;
+                }
+            });
+            //Gets the head of the frontier 
+            Node n = frontier.get(0);
+            frontier.remove(0);
+            //Initally checks if the node pulled off the top is the goal 
+            if(n.x_coord == endx && n.y_coord == endy){
+                //Found the route 
+                //Gets the route from the stack that can then be drawn between 
+                System.out.println("FOUND THE GOAL!!!");
+                return;
+            }
+            //Get the next paths from that node and places into frontier  
+            for(Node node: n.nodesinRange){
+                //Caclulates the cost value for the new node 
+                node.cost = node.cost + calculateDistanceBetweenPoints(n.x_coord, n.y_coord, node.x_coord, node.y_coord);
+                //Calculates the new nodes f value then places into the frontier 
+                node.f_value = calcfValue(node);
+                frontier.add(node);
+            }
+            //Places that node expanded out onto the stack 
+            theStack.add(n);
         }
         
     }
@@ -245,6 +280,12 @@ public class astar extends JPanel{
             double heuristic = getHeuristic(n);
             n.heuristic = heuristic;
         }
+    }
+
+
+    //Calculates the fvalue
+    public static double calcfValue(Node node){
+        return node.cost + node.heuristic;
     }
 
 }
