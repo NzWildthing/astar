@@ -88,8 +88,6 @@ public class astar extends JPanel {
             }
             reader.close();
 
-            //System.out.println("Start: " + startx + " " + starty);
-            //System.out.println("End: " + endx + " " + endy);
         }
         catch(Exception e){
             System.err.println("Error occurred while extracting CSV information. Try again");
@@ -128,9 +126,11 @@ public class astar extends JPanel {
             //create graphics frame to draw map onto
             astar gui = new astar(); 
 			JFrame frame = new JFrame("The Starship Enterprise's Mystical Journey Through The Cosmos");
-
+            //makes apllication exit on closing the graphics window
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            //set frame dimensions
 			frame.setSize(666,770);
+            //set starting location on monitor
             frame.setLocation(200,200);
 			frame.add(gui);
 			frame.setVisible(true);
@@ -158,6 +158,7 @@ public class astar extends JPanel {
         g1.setFont(font);
 
         //drawing key
+        //sets to matchin colours and draw exmple point or line with text description
         g1.setPaint(Color.PINK);
         g1.drawString("Path", 5, 20);
         g1.draw(new Line2D.Double(107, 7, 121, 21));   
@@ -352,18 +353,21 @@ public class astar extends JPanel {
     public static double calcfValue(Node node){
         return node.cost + node.heuristic;
     }
-
+    //prints the path infomation to terminal
     public static void printPath(){
         int counter=0;
         int num = path.size();
-        System.out.println("Path to goal ("+ num +" stars visted):"); 
-        //prints the coordinates of the stars along the path
+        //title of path taken shows how many visits
+        System.out.println("Path to goal ("+ num +" stars visited):"); 
+        //runs through all nodes of path stack 
         for (Node nodes : path){
             num = path.size();
             num = num - counter;
+            //prints each star visted and says if starting or ending star
             if(num==1){System.out.println("Starting star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
             else if(num==path.size()){System.out.println("Ending star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
             else{System.out.println("Star " + num + " at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+            //increments counter
             counter+=1;
         }
     }
