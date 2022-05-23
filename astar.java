@@ -291,8 +291,6 @@ public class astar extends JPanel {
                 //Initally checks if the node pulled off the top is the goal 
                 if(curr.x_coord == endx && curr.y_coord == endy){
                     //Found the route 
-                    //Gets the route from the stack that can then be drawn between 
-
                     //Loops through the full list of stars backtracking through the end goals previous 
                     while (curr != null && curr != stars.get(starti-1)) {
                         //And adding it to the path 
@@ -302,6 +300,7 @@ public class astar extends JPanel {
                     }
                     path.add(curr);
 
+                    //Exits out of the method 
                     return;
                 }
                 //Get the next paths from that node and places into frontier  
@@ -323,22 +322,16 @@ public class astar extends JPanel {
                         }
                     }
                 }
-
-                //Places that node expanded out onto the stack 
-                //path.add(curr);
             }
+
+            //Otherwise frontier is empty 
+            System.out.println("No Route Found!!!");
 
         //catches of the algorithm does not find the goal star
         }catch(Exception e){
-            System.err.println("No Route Found");
+            System.err.println("No Route Found!!!");
         }
     }
-
-    //Prints out the goal from the stack 
-    //while(!path.isEmpty()){
-    //    Node n = (Node)path.pop();
-    //    System.out.println(n.x_coord + " " + n.y_coord);
-    //}
 
     //Loops through each of the nodes presetting their heuristics
     public static void setHeuristic(){
@@ -355,20 +348,28 @@ public class astar extends JPanel {
     }
     //prints the path infomation to terminal
     public static void printPath(){
-        int counter=0;
+        int counter=1;
         int num = path.size();
         //title of path taken shows how many visits
         System.out.println("Path to goal ("+ num +" stars visited):"); 
-        //runs through all nodes of path stack 
-        for (Node nodes : path){
-            num = path.size();
-            num = num - counter;
-            //prints each star visted and says if starting or ending star
-            if(num==1){System.out.println("Starting star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-            else if(num==path.size()){System.out.println("Ending star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-            else{System.out.println("Star " + num + " at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-            //increments counter
-            counter+=1;
+        //Copys the path 
+        Stack<Node> nodesVisited = (Stack)path.clone();
+        //Prints out the goal from the stack 
+        while(!nodesVisited.isEmpty()){
+            Node n = (Node)nodesVisited.pop();
+            System.out.println("Star " + counter + " at coordinate ("+ n.x_coord+ ", " + n.y_coord+ ")");
+            //Increment counter
+            counter++;
         }
-    }
+        //runs through all nodes of path stack 
+        //for (Node nodes : path){
+        //    num = path.size();
+        //    num = num - counter;
+        //    //prints each star visted and says if starting or ending star
+        //    if(num==1){System.out.println("Starting star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+        //    else if(num==path.size()){System.out.println("Ending star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+        //   else{System.out.println("Star " + num + " at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+        //    //increments counter
+        //    counter+=1;
+        }
 }
