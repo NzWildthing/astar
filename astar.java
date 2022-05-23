@@ -4,7 +4,12 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.geom.*;
 import java.util.Comparator;
-
+//Student 1 
+//Name: George Elstob 
+//ID:   1534323
+//Student 2: 
+//Name: Brogan Jowers-Wilding 
+//ID:   1538252
 public class astar extends JPanel {
     public static Double endx, endy, startx, starty;
     
@@ -74,11 +79,12 @@ public class astar extends JPanel {
 
                 Node node = new Node(x, y);
                 stars.add(node);
-
+                //save starting stars coordinates
                 if(i==starti){
                     startx=x;
                     starty=y;
                 }
+                //save ending stars coordinates
                 else if(i==endi){
                     endx=x;
                     endy=y;
@@ -129,7 +135,7 @@ public class astar extends JPanel {
             //makes apllication exit on closing the graphics window
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             //set frame dimensions
-			frame.setSize(666,770);
+			frame.setSize(676,780);
             //set starting location on monitor
             frame.setLocation(200,200);
 			frame.add(gui);
@@ -139,27 +145,32 @@ public class astar extends JPanel {
     }
 
     public void paint(Graphics g){
-        int width=5, height = 5, margin=20,  count=0;
+        int width=5, height = 5, margin=40,  count=0;
         Double x=0.0, y=0.0;    
         Graphics2D g1=(Graphics2D)g;
+        //create a font to draw labels
+        Font font = new Font("Arial", Font.BOLD, 16);
+        g1.setFont(font);
+
         //draw box around stars
         g1.draw(new Line2D.Double(610+margin, 710, 610+margin, 100));
         g1.draw(new Line2D.Double(610+margin, 100, margin, 100));
         g1.draw(new Line2D.Double(margin, 100, margin, 710));
         g1.draw(new Line2D.Double(margin, 710, 610+margin, 710));
-        /*
+
+        //draw labels on graph
         g1.draw(new Line2D.Double(margin, 710, margin, 720));
         g1.draw(new Line2D.Double(600+margin, 710, 600+margin, 720));
         g1.draw(new Line2D.Double(margin-10, 110, margin, 110));
         g1.draw(new Line2D.Double(margin-10, 710, margin, 710));
-        */
-        //create a font to draw labels
-        Font font = new Font("Arial", Font.BOLD, 16);
-        g1.setFont(font);
+        g1.drawString("0", 36, 735);
+        g1.drawString("100", 625, 735);
+        g1.drawString("0", 15, 715);
+        g1.drawString("100", 0, 115);
 
         //drawing key
-        //sets to matchin colours and draw exmple point or line with text description
-        g1.setPaint(Color.PINK);
+        //sets to match colours and draw example point or line with text description
+        g1.setPaint(Color.BLACK);
         g1.drawString("Path", 5, 20);
         g1.draw(new Line2D.Double(107, 7, 121, 21));   
 
@@ -175,13 +186,12 @@ public class astar extends JPanel {
         g1.drawString("Star", 5, 80);
         g1.fill(new Ellipse2D.Double(110, 70, width, height));
         
-      
         //run through and draw all stars
         for(Node node : stars){
 
             //get coordinates and scale for better visualization
             x = (node.x_coord *6);
-            y = (node.y_coord *6);
+            y = 600-(node.y_coord *6);
 
             //set stars colours
 
@@ -205,25 +215,33 @@ public class astar extends JPanel {
                 g1.fill(new Ellipse2D.Double(x+margin,y+100, width, height));
             }    
             
-        }  
+        }  //if to check a path was found
+        if(path.size()!=0){
+            //draw path to goal
+            for (Node nodes : path){
 
-        //draw path to goal
-        for (Node nodes : path){
+                //save previous start coordinates
+                Double lastx=x;
+                Double lasty=y;
+                //get coordinates and scale for better visualization
+                x = (nodes.x_coord *6);
+                y = 600-(nodes.y_coord *6);
 
-            //save previous start coordinates
-            Double lastx=x;
-            Double lasty=y;
-            //get coordinates and scale for better visualization
-            x = (nodes.x_coord *6);
-            y = (nodes.y_coord *6);
-
-            //set to path colour
-            g1.setPaint(Color.PINK);
-            //if not the 1st point draw path between points
-            if(count!=0){g1.draw(new Line2D.Double(lastx+3+margin, lasty+103, x+3+margin, y+103));}
-            count+=1;   
+                //set to path colour
+                g1.setPaint(Color.BLACK);
+                //if not the 1st point draw path between points
+                if(count!=0){g1.draw(new Line2D.Double(lastx+3+margin, lasty+103, x+3+margin, y+103));}
+                count+=1;   
+            }
+        //else output to user no route was found
+        }else{
+            //sets new fount for user message
+            Font message = new Font("Arial", Font.BOLD, 32);
+            g1.setFont(message);
+            g1.setPaint(Color.RED);
+            //displays message
+            g1.drawString("No Path Found", 230, 335);
         }
-    
     }
 
     public static double calculateDistanceBetweenPoints(double x1, double y1, double x2, double y2) 
@@ -271,6 +289,7 @@ public class astar extends JPanel {
         frontier.add(startNode);
         try{
             while(!frontier.isEmpty()){
+                //sorts array list by f value using comparator
                 Collections.sort(frontier, new Comparator<Node>(){
                     public int compare(Node o1, Node o2){
                         if(o1.f_value == o2.f_value)
@@ -357,19 +376,12 @@ public class astar extends JPanel {
         //Prints out the goal from the stack 
         while(!nodesVisited.isEmpty()){
             Node n = (Node)nodesVisited.pop();
-            System.out.println("Star " + counter + " at coordinate ("+ n.x_coord+ ", " + n.y_coord+ ")");
+            //if starting or ending node display special message if not just display as a normal star
+            if(counter==1){System.out.println("Starting star at coordinate ("+ n.x_coord+ ", " + n.y_coord+ ")");}
+            else if(counter==num){System.out.println("Ending star at coordinate ("+ n.x_coord+ ", " + n.y_coord+ ")");}
+            else{System.out.println("Star " + counter + " at coordinate ("+ n.x_coord+ ", " + n.y_coord+ ")");}
             //Increment counter
             counter++;
         }
-        //runs through all nodes of path stack 
-        //for (Node nodes : path){
-        //    num = path.size();
-        //    num = num - counter;
-        //    //prints each star visted and says if starting or ending star
-        //    if(num==1){System.out.println("Starting star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-        //    else if(num==path.size()){System.out.println("Ending star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-        //   else{System.out.println("Star " + num + " at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
-        //    //increments counter
-        //    counter+=1;
-        }
+    }
 }

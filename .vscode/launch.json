@@ -22,7 +22,7 @@
             "name": "Launch with Arguments Prompt",
             "request": "launch",
             "mainClass": "",
-            "args": "spiral_v2.csv 1 24 15"
+            "args": "trap.csv 1 24 10"
         }
     ]
 }
