@@ -88,8 +88,8 @@ public class astar extends JPanel {
             }
             reader.close();
 
-            System.out.println("Start: " + startx + " " + starty);
-            System.out.println("End: " + endx + " " + endy);
+            //System.out.println("Start: " + startx + " " + starty);
+            //System.out.println("End: " + endx + " " + endy);
         }
         catch(Exception e){
             System.err.println("Error occurred while extracting CSV information. Try again");
@@ -109,6 +109,9 @@ public class astar extends JPanel {
             //Draws the graphical GUI
             drawGraph();
 
+            //prints the path to the terminal
+            printPath();
+
         
         }	
         catch(Exception e) {
@@ -127,7 +130,7 @@ public class astar extends JPanel {
 			JFrame frame = new JFrame("The Starship Enterprise's Mystical Journey Through The Cosmos");
 
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800,750);
+			frame.setSize(666,770);
             frame.setLocation(200,200);
 			frame.add(gui);
 			frame.setVisible(true);
@@ -136,15 +139,20 @@ public class astar extends JPanel {
     }
 
     public void paint(Graphics g){
-        int width=5, height = 5, margin=100, size=710, count=0;
+        int width=5, height = 5, margin=20,  count=0;
         Double x=0.0, y=0.0;    
         Graphics2D g1=(Graphics2D)g;
         //draw box around stars
-        g1.draw(new Line2D.Double(margin, 90, margin, 630));
-        g1.draw(new Line2D.Double(margin, 630, size, 630));
-        g1.draw(new Line2D.Double(size, 90, size, 630));
-        g1.draw(new Line2D.Double(margin, 90, size, 90));
-        
+        g1.draw(new Line2D.Double(610+margin, 710, 610+margin, 100));
+        g1.draw(new Line2D.Double(610+margin, 100, margin, 100));
+        g1.draw(new Line2D.Double(margin, 100, margin, 710));
+        g1.draw(new Line2D.Double(margin, 710, 610+margin, 710));
+        /*
+        g1.draw(new Line2D.Double(margin, 710, margin, 720));
+        g1.draw(new Line2D.Double(600+margin, 710, 600+margin, 720));
+        g1.draw(new Line2D.Double(margin-10, 110, margin, 110));
+        g1.draw(new Line2D.Double(margin-10, 710, margin, 710));
+        */
         //create a font to draw labels
         Font font = new Font("Arial", Font.BOLD, 16);
         g1.setFont(font);
@@ -152,19 +160,19 @@ public class astar extends JPanel {
         //drawing key
         g1.setPaint(Color.PINK);
         g1.drawString("Path", 5, 20);
-        g1.draw(new Line2D.Double(95, 5, 109, 15));   
+        g1.draw(new Line2D.Double(107, 7, 121, 21));   
 
         g1.setPaint(Color.GREEN);
-        g1.drawString("Start Point", 5, 40);
-        g1.fill(new Ellipse2D.Double(100, 30, width+3, height+3));
+        g1.drawString("Starting Star", 5, 40);
+        g1.fill(new Ellipse2D.Double(110, 30, width+3, height+3));
 
         g1.setPaint(Color.RED);
-        g1.drawString("End Point", 5, 60);  
-        g1.fill(new Ellipse2D.Double(100, 50, width+3, height+3));
+        g1.drawString("Ending Star", 5, 60);  
+        g1.fill(new Ellipse2D.Double(110, 50, width+3, height+3));
         
         g1.setPaint(Color.BLUE);
         g1.drawString("Star", 5, 80);
-        g1.fill(new Ellipse2D.Double(100, 70, width, height));
+        g1.fill(new Ellipse2D.Double(110, 70, width, height));
         
       
         //run through and draw all stars
@@ -175,44 +183,44 @@ public class astar extends JPanel {
             y = (node.y_coord *6);
 
             //set stars colours
+
             g1.setPaint(Color.BLUE);
             // if start point
-            if(x/6==startx && y/6==starty){
+            if(node.x_coord==startx && node.y_coord==starty){
                 //set stars colours
                 g1.setPaint(Color.GREEN);
                 //draw starting star
-                g1.fill(new Ellipse2D.Double(x+margin,y+margin, width+3, height+3));
+                g1.fill(new Ellipse2D.Double(x+margin,y+100, width+3, height+3));
             }//else if end point 
-            else if(x/6==endx && y/6==endy){
+            else if(node.x_coord==endx && node.y_coord==endy){
                 //set stars colours
                 g1.setPaint(Color.RED);
                 
                 //draw end star
-                g1.fill(new Ellipse2D.Double(x+margin,y+margin, width+3, height+3));
+                g1.fill(new Ellipse2D.Double(x+margin,y+100, width+3, height+3));
             }//else normal star
             else{
                 //draw star
-                g1.fill(new Ellipse2D.Double(x+margin,y+margin, width, height));
+                g1.fill(new Ellipse2D.Double(x+margin,y+100, width, height));
             }    
             
         }  
-        //
+
         //draw path to goal
         for (Node nodes : path){
+
             //save previous start coordinates
             Double lastx=x;
             Double lasty=y;
             //get coordinates and scale for better visualization
             x = (nodes.x_coord *6);
             y = (nodes.y_coord *6);
-            System.out.println("the size of path is " + path.size());
+
             //set to path colour
             g1.setPaint(Color.PINK);
             //if not the 1st point draw path between points
-            if(count!=0){g1.draw(new Line2D.Double(lastx+2.5+margin, lasty+2.5+margin, x+2.5+margin, y+2.5+margin));}
+            if(count!=0){g1.draw(new Line2D.Double(lastx+3+margin, lasty+103, x+3+margin, y+103));}
             count+=1;   
-
-
         }
     
     }
@@ -283,8 +291,7 @@ public class astar extends JPanel {
                 if(curr.x_coord == endx && curr.y_coord == endy){
                     //Found the route 
                     //Gets the route from the stack that can then be drawn between 
-                    System.out.println("Path to goal:");
-                     
+
                     //Loops through the full list of stars backtracking through the end goals previous 
                     while (curr != null && curr != stars.get(starti-1)) {
                         //And adding it to the path 
@@ -315,9 +322,11 @@ public class astar extends JPanel {
                         }
                     }
                 }
+
                 //Places that node expanded out onto the stack 
                 //path.add(curr);
             }
+
         //catches of the algorithm does not find the goal star
         }catch(Exception e){
             System.err.println("No Route Found");
@@ -344,4 +353,18 @@ public class astar extends JPanel {
         return node.cost + node.heuristic;
     }
 
+    public static void printPath(){
+        int counter=0;
+        int num = path.size();
+        System.out.println("Path to goal ("+ num +" stars visted):"); 
+        //prints the coordinates of the stars along the path
+        for (Node nodes : path){
+            num = path.size();
+            num = num - counter;
+            if(num==1){System.out.println("Starting star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+            else if(num==path.size()){System.out.println("Ending star at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+            else{System.out.println("Star " + num + " at coordinate ("+ nodes.x_coord+ ", " + nodes.y_coord+ ")");}
+            counter+=1;
+        }
+    }
 }
